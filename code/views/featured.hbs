@@ -1,0 +1,105 @@
+{{> header title="Featured" }}
+
+<body class="text-center">
+
+  {{> nav }}
+
+  <div class="container mt-3">
+    <div class="col-xl-10 offset-xl-1 text-left">
+
+      {{> flash }}
+
+      <h1 class="h4 text-center mt-4 mb-4 pt-3"><strong>Featured</strong></h1>
+
+      <div class="row mt-5">
+
+        <div class="col-xl-4 col-md-6 col-xs-12 text-left p-3 confirmed-bg">
+          <h1 class="h6 text-center"><strong>Set Doc as Featured</strong></h1>
+          <div>
+            <input type="text" id="setFeaturedDocId" class="form-control" placeholder="Doc ID"/>
+            <button id="setFeaturedButton" onclick="setFeatured(true);" class="btn confirmed-blue-btn btn-sm mt-2" style="width: 49%;">Set Featured</button>
+            <button id="setFeaturedButton" onclick="setFeatured(false);" class="btn confirmed-blue-btn btn-sm mt-2" style="width: 49%;">Set Not Featured</button>
+            <input type="text" id="setFeaturedResult" class="form-control mt-2" placeholder="Result Appears Here" readonly="readonly"/>
+          </div>
+        </div>
+
+      </div>
+
+    </div> <!-- column -->
+  </div> <!-- row -->
+
+  {{> footer}}
+
+  {{> bootstrapjs}}
+
+  <script>
+
+    function setFeatured(value) {
+      document.getElementById("setFeaturedResult").value = "";
+  		var http = new XMLHttpRequest();
+  		var url = "set-featured";
+  		http.open("POST", url, true);
+    	var params = "docId=" + document.getElementById("setFeaturedDocId").value + "&newValue=" + value.toString();
+      http.responseType = 'json';
+  		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  		http.onreadystatechange = function() {
+  		    if (http.readyState == 4) {
+    				if (http.status == 200) {
+              document.getElementById("setFeaturedResult").value = http.response.message;
+              return;
+    				}
+            alert("Error: " + JSON.stringify(http.response));
+  		    }
+  		}
+  		http.send(params);
+    }
+
+    function deleteUserWithId() {
+      if (confirm("This will send an email to alert the customer that you're deleting their account and cancelling their subscriptions. Proceed?")) {
+        document.getElementById("deleteUserWithIdButton").disabled = true;
+        document.getElementById("deleteUserWithIdResult").value = "";
+    		var http = new XMLHttpRequest();
+    		var url = "delete-user-with-id";
+    		http.open("POST", url, true);
+      	var params = "id=" + document.getElementById("deleteUserWithIdId").value + "&reason=" + document.getElementById("deleteUserWithIdReason").value + "&banned=" + document.getElementById("deleteUserWithIdBanned").checked;
+        http.responseType = 'json';
+    		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    		http.onreadystatechange = function() {
+    		    if (http.readyState == 4) {
+              document.getElementById("deleteUserWithIdButton").disabled = false;
+      				if (http.status == 200) {
+                document.getElementById("deleteUserWithIdResult").value = http.response.message;
+                return;
+      				}
+              alert("Error: " + JSON.stringify(http.response));
+    		    }
+    		}
+    		http.send(params);
+      }
+    }
+
+    function doNotEmail() {
+      document.getElementById("doNotEmailButton").disabled = true;
+      document.getElementById("doNotEmailResult").value = "";
+  		var http = new XMLHttpRequest();
+  		var url = "set-do-not-email";
+  		http.open("POST", url, true);
+    	var params = "email=" + document.getElementById("doNotEmailEmail").value;
+      http.responseType = 'json';
+  		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  		http.onreadystatechange = function() {
+  		    if (http.readyState == 4) {
+            document.getElementById("doNotEmailButton").disabled = false;
+    				if (http.status == 200) {
+              document.getElementById("doNotEmailResult").value = http.response.message;
+              return;
+    				}
+            alert("Error: " + JSON.stringify(http.response));
+  		    }
+  		}
+  		http.send(params);
+    }
+
+  </script>
+
+</body>
