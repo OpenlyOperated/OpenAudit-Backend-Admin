@@ -44,9 +44,8 @@ router.post("/postgres-command",
   .then( result => {
     return Audit.logToS3("PostgresQueries", command);
   })
-  // Execute the query, replacing PG_PARTNER_PASSWORD as needed
+  // Execute the query
   .then( result => {
-    command = command.replace("PG_PARTNER_PASSWORD", PG_PARTNER_PASSWORD);
     return Database.query( command, [])
   })
   .catch( error => {
